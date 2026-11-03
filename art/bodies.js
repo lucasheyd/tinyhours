@@ -8,7 +8,7 @@ const { CAST, who } = require('./cast');
 const OUT = path.join(__dirname, '..', 'out'); fs.mkdirSync(OUT, { recursive: true });
 const POSES = [['de pé', {}], ['acenando', { arms: ['down', 'wave'] }], ['segurando', { arms: ['hip', 'hold'] }], ['sentado', { sit: true, arms: ['hug', 'hug'] }]];
 const defs = `<defs><filter id="bc" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/></filter><pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="14" stroke="${INK}" stroke-width="3" opacity="0.28"/></pattern></defs>`;
-const svg = (t) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 60 1000 1000">${defs}<rect y="60" width="1000" height="1000" fill="#fff1d6"/><ellipse cx="500" cy="910" rx="230" ry="34" fill="#00000030"/><g filter="url(#bc)">${creature(t)}</g></svg>`;
+const svg = (t) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">${defs}<rect width="1000" height="1000" fill="#fff1d6"/><ellipse cx="500" cy="910" rx="230" ry="34" fill="#00000030"/><g filter="url(#bc)">${creature(t)}</g></svg>`;
 const extras = [3, 8, 12, 9].map((s) => ({ ...traitsOf(s), hold: 'none', wear: 'none' }));
 const rows = [...Object.keys(CAST).map((id) => [CAST[id].name, (p) => who(id, { pose: p, hold: p.arms && p.arms[1] === 'hold' ? (CAST[id].hold !== 'none' ? CAST[id].hold : 'onigiri') : 'none' })]), ...extras.map((t) => [`${t.species} #${t.seed}`, (p) => ({ ...t, pose: p, hold: p.arms && p.arms[1] === 'hold' ? 'can' : 'none' })])];
 (async () => {

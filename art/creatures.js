@@ -111,7 +111,8 @@ function creature(t) {
     }
   }
   const earSvg = [];
-  if (t.species === 'bun') for (const d of [-1, 1]) { const e = inked(smooth(blob(r, hx + d * 95, top - 95, 52, 150, { rot: d * 0.22, power: 2 })), base, shade, { depth: 16, extra: `<ellipse cx="${hx + d * 95}" cy="${top - 85}" rx="24" ry="105" transform="rotate(${d * 12.6} ${hx + d * 95} ${top - 85})" fill="${base2}"/>` }); back.push(e); earSvg.push(e); }
+  const earY = Math.max(top - 78, 30 + 128); // long ears never leave the frame: on a tall head they sit lower
+  if (t.species === 'bun') for (const d of [-1, 1]) { const e = inked(smooth(blob(r, hx + d * 92, earY, 50, 128, { rot: d * 0.2, power: 2 })), base, shade, { depth: 16, extra: `<ellipse cx="${hx + d * 92}" cy="${earY + 8}" rx="23" ry="90" transform="rotate(${d * 11.5} ${hx + d * 92} ${earY + 8})" fill="${base2}"/>` }); back.push(e); earSvg.push(e); }
   if (t.species === 'bear') for (const d of [-1, 1]) back.push(inked(smooth(blob(r, hx + d * hrx * 0.72, top + 30, 72, 68)), base, shade, { depth: 14, extra: `<circle cx="${hx + d * hrx * 0.72}" cy="${top + 34}" r="36" fill="${base2}"/>` }));
   if (t.species === 'imp') for (const d of [-1, 1]) {
     const hp = []; for (let i = 0; i <= 8; i += 1) { const k = i / 8; hp.push([hx + d * (hrx * 0.45 + k * 120 - k * k * 40), top + 40 - k * 170 + k * k * 30]); }
@@ -127,10 +128,12 @@ function creature(t) {
   if (t.species === 'moth') for (const d of [-1, 1]) { back.push(line(`M${hx + d * 60} ${top + 30} Q ${hx + d * 110} ${top - 120} ${hx + d * 190} ${top - 110}`, 8)); back.push(inked(smooth(blob(r, hx + d * 200, top - 112, 34, 30)), base2, shade2, { depth: 10 })); }
   // the head
   let headExtra = '';
-  if (t.marking === 'patchbig') headExtra += `<path d="${smooth(blob(r, hx + 95, hy - 10, 115, 105, { wobble: 0.05 }))}" fill="${base2}"/>`;
-  if (t.marking === 'patch') headExtra += `<path d="${smooth(blob(r, hx + 84, hy + 8, 74, 70, { wobble: 0.06 }))}" fill="${base2}"/>`; // a spot around one eye, not half the face
+  if (t.marking === 'patch' || t.marking === 'patchbig') headExtra += `<path d="${smooth(blob(r, hx + 95, hy - 10, 115, 105, { wobble: 0.05 }))}" fill="${base2}"/>`;
   if (t.marking === 'stripes') for (let i = -1; i <= 1; i += 1) headExtra += `<path d="M${hx + i * 48 - 14} ${top - 10} L${hx + i * 48 + 14} ${top - 10} L${hx + i * 40} ${top + 70} Z" fill="${shade}"/>`;
-  front.push(inked(smooth(blob(r, hx, hy, hrx, hry, { power: t.species === 'slime' ? 2 : 2.25, pear: t.species === 'bird' ? -0.05 : 0.07 })), base, shade, { w: 10, depth: 34, extra: headExtra }));
+  // the head is kept symmetric (the random wobble is drawn but mirrored), so one cheek never looks bigger than the other
+  const headPts = blob(r, hx, hy, hrx, hry, { power: t.species === 'slime' ? 2 : 2.25, pear: t.species === 'bird' ? -0.05 : 0.07 });
+  const headSym = headPts.map(([x, y], i) => { const n = headPts.length; const [qx, qy] = headPts[(n + n / 2 - i) % n]; return [(x + (2 * hx - qx)) / 2, (y + qy) / 2]; }); // average each point with the one at the mirrored angle
+  front.push(inked(smooth(headSym), base, shade, { w: 10, depth: 34, extra: headExtra }));
   if (t.species === 'moth') back.push(inked(smooth(Array.from({ length: 26 }, (_, i) => { const a = (i / 26) * Math.PI * 2; const rr = i % 2 ? 1 : 1.16; return [hx + Math.cos(a) * 175 * rr, hy + hry + 30 + Math.sin(a) * 62 * rr]; })), '#fff4dc', '#d8c3a0', { depth: 10 }));
   if (t.species === 'slime') { front.push(`<path d="${smooth(blob(r, hx - hrx * 0.45, hy - hry * 0.5, 44, 26, { rot: -0.5 }))}" fill="#ffffffcc"/>`); }
 
@@ -195,7 +198,7 @@ function creature(t) {
     // long ears go through holes in the cap
     if (earSvg.length) {
       const cid = `cap${uid += 1}`;
-      wear.push(`<clipPath id="${cid}"><rect x="0" y="-300" width="1000" height="${top + 300 + 2}"/></clipPath>${[-1, 1].map((d) => `<ellipse cx="${hx + d * 95}" cy="${top + 4}" rx="44" ry="13" fill="${INK}"/>`).join('')}<g clip-path="url(#${cid})">${earSvg.join('')}</g>`);
+      wear.push(`<clipPath id="${cid}"><rect x="0" y="-300" width="1000" height="${top + 300 + 2}"/></clipPath>${[-1, 1].map((d) => `<ellipse cx="${hx + d * 92}" cy="${top + 4}" rx="42" ry="13" fill="${INK}"/>`).join('')}<g clip-path="url(#${cid})">${earSvg.join('')}</g>`);
     }
   }
   if (t.wear === 'bandaid') wear.push(`<g transform="rotate(-25 ${hx - ex - 20} ${ey + ery + 30})"><rect x="${hx - ex - 70}" y="${ey + ery + 16}" width="100" height="30" rx="14" fill="#ffd9b0" stroke="${INK}" stroke-width="6"/><rect x="${hx - ex - 38}" y="${ey + ery + 16}" width="36" height="30" fill="#f0bb8a"/></g>`);
@@ -208,7 +211,7 @@ function creature(t) {
   const things = [];
   const hand = B.arms[1];
   if (hold !== 'none') {
-    const [px, py] = hand.P; const x = px, y = py + 18;
+    const [px, py] = hand.P; const x = px, y = py + 40; // held low, so it never covers the mouth
     if (hold === 'onigiri') things.push(inked(smooth([[x, y - 110], [x + 66, y + 10], [x - 66, y + 10]]), '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${x - 34}" y="${y - 40}" width="68" height="50" fill="#2b3a2e"/>` }));
     if (hold === 'can') things.push(inked(`M${x - 34} ${y - 120} h68 v124 h-68 Z`, t.accent, '#00000030', { depth: 10, extra: `<rect x="${x - 34}" y="${y - 84}" width="68" height="30" fill="#fffdf7"/>` }));
     if (hold === 'phone') things.push(inked(`M${x - 30} ${y - 140} h60 v140 h-60 Z`, '#cfd6e6', '#98a2bd', { depth: 10, extra: `<rect x="${x - 20}" y="${y - 128}" width="40" height="44" fill="#9fe3c6"/><rect x="${x - 22}" y="${y - 70}" width="44" height="6" fill="${INK}"/>` }));

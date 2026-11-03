@@ -9,7 +9,7 @@ const coat = (id) => COATS.find((c) => c[0] === id);
 const CAST = {
   pomu: {
     name: 'Pomu', role: 'the night-shift clerk. Always sleepy, always polite. Wakes up for every door chime.',
-    seed: 6, species: 'pup', coat: coat('peach'), coat2: coat('cream'), eyes: 'sleepy', mouth: 'cat', wear: 'vest', hold: 'none', marking: 'patchbig', accent: '#ff5a5f',
+    seed: 6, species: 'pup', coat: coat('peach'), coat2: coat('cream'), eyes: 'sleepy', mouth: 'cat', wear: 'vest', hold: 'none', marking: 'patch', accent: '#ff5a5f',
   },
   lumi: {
     name: 'Lumi', role: 'a regular who cannot resist the drink fridge light. Or any light, really.',

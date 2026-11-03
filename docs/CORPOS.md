@@ -69,6 +69,12 @@ O que a pesquisa diz e como ficou:
 
 Teste: `node video/render.js 90` gera `out/90-test-joints.mp4`. Mostra o Pomu e o Hop passando por todas as poses, só para conferir as juntas, não para postar.
 
+## 5c. Regras que valem sempre
+
+- **Nada sai do quadro.** Orelhas, antenas, rabos, asas e o que está na mão ficam inteiros dentro da imagem, com folga. Orelhas longas descem quando a cabeça é alta. `npm run check` (`art/check-frame.js`) desenha o elenco e 60 bichos em 5 poses e falha se algo encosta na borda.
+- **Rosto simétrico.** O formato da cabeça é espelhado, e o tremor de mão fica só no traço. Assim uma bochecha nunca parece maior que a outra, com ou sem mancha.
+- **Objetos na mão ficam baixos**, na altura da barriga, e nunca cobrem a boca.
+
 ## 6. O que está no código (`art/body.js`)
 
 - **Tronco em pera:**

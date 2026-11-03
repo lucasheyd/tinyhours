@@ -4,7 +4,9 @@
   "description": "Tiny Hours: very small creatures at a 24h corner store. Art and short videos, drawn by code.",
   "scripts": {
     "video": "node video/render.js",
-    "cast": "node art/sheet.js"
+    "cast": "node art/sheet.js",
+    "check": "node art/check-frame.js",
+    "poses": "node art/bodies.js"
   },
   "devDependencies": {
     "playwright": "^1.48.0"
