@@ -48,6 +48,8 @@ function eyes(kind, L, R) {
   if (kind === 'flat') return pair.map(([x, y]) => line(`M${x - 18} ${y + 2} L${x + 18} ${y + 2}`, 9)).join('');
   if (kind === 'teary') return pair.map(([x, y]) => dot([x, y], 1.05) + `<path d="M${x - 15} ${y + 10} q 15 10 30 0" fill="none" stroke="#7cc6ff" stroke-width="6" stroke-linecap="round"/>`).join('');
   if (kind === 'heart') return pair.map(([x, y]) => `<path transform="translate(${x} ${y}) scale(0.62)" d="M0 26 C -52 -6 -24 -46 0 -16 C 24 -46 52 -6 0 26 Z" fill="#ff6f8f" stroke="${INK}" stroke-width="8" stroke-linejoin="round"/>`).join('');
+  if (kind === 'x') return pair.map(([x, y]) => line(`M${x - 13} ${y - 13} L${x + 13} ${y + 13} M${x + 13} ${y - 13} L${x - 13} ${y + 13}`)).join('');
+  if (kind === 'wink') return dot(L) + line(`M${R[0] - 17} ${R[1] + 4} Q ${R[0]} ${R[1] - 14} ${R[0] + 17} ${R[1] + 4}`);
   return pair.map((p) => dot(p)).join('');
 }
 function mouth(kind, [x, y]) {
@@ -113,4 +115,4 @@ ${border ? `<g filter="url(#${fw})">${sil}</g>` : ''}<g filter="url(#${fo})">${s
 ${c.over || ''}${face}${held}${front.map(frontArm).join('')}${extras}${caption}</svg>`;
 }
 
-module.exports = { sticker, smooth, ellipse, capsule, INK, W, H };
+module.exports = { sticker, smooth, ellipse, capsule, goo, ringF, eyes, mouth, blush, EXTRA, INK, W, H };
