@@ -85,3 +85,5 @@ Cada aprovado tem um pacote de 16 stickers, no formato do LINE:
 node stickers/build-yoru.js    # Yoru
 node stickers/build-packs.js   # Drizzle e Futo, e trio.png com os três
 ```
+
+O guia completo dos aprovados, com ficha de cada um, animação e 3D, está em `docs/APROVADOS.md`.

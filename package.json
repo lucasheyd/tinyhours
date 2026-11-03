@@ -7,7 +7,9 @@
     "cast": "node art/sheet.js",
     "check": "node art/check-frame.js",
     "poses": "node art/bodies.js",
-    "stickers": "node stickers/build.js"
+    "stickers": "node stickers/build.js",
+    "yoru": "node stickers/build-yoru.js",
+    "packs": "node stickers/build-packs.js"
   },
   "devDependencies": {
     "playwright": "^1.48.0"

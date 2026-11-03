@@ -38,3 +38,7 @@ Each clip is a file in `video/clips/`, with a `draw(frame)` that returns the fra
 The videos have no sound: add a trending sound in the app when posting.
 
 `out/` is not versioned. Social setup: [`docs/SOCIAIS.md`](docs/SOCIAIS.md).
+
+## Mascotes aprovados
+
+Yoru, Drizzle e Futo. Para continuar com eles, em animação ou em 3D, leia [`docs/APROVADOS.md`](docs/APROVADOS.md).
