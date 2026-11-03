@@ -155,8 +155,8 @@ module.exports = function makeBody({ smooth, inked, line, dot, INK }) {
     const kind = t.species === 'bird' ? 'bird' : 'paw';
     const slime = t.species === 'slime';
     const sit = !!pose.sit && !slime;
-    const yT = hy + hry * 0.55, yB = hy + hry + (slime ? 190 : sit ? 205 : 235);
-    const ws = hrx * (slime ? 0.7 : 0.5), wh = hrx * (slime ? 1.08 : sit ? 0.86 : 0.76);
+    const yT = hy + hry * 0.55, yB = hy + hry + (slime ? 282 : sit ? 205 : 235);
+    const ws = hrx * (slime ? 0.78 : 0.5), wh = hrx * (slime ? 1.12 : sit ? 0.86 : 0.76);
     const lean = pose.lean || 0;
     const d = smooth(torsoPoints(hx, yT, yB, ws, wh, pose.breath || 0));
     const pad = '#ff9fb0';
@@ -179,7 +179,9 @@ module.exports = function makeBody({ smooth, inked, line, dot, INK }) {
       const name = typeof specs[i] === 'string' ? specs[i] : (specs[i].k < 0.5 ? specs[i].from : specs[i].to);
       return { s, g, P: g.P, k: name };
     });
-    const sil = `<path d="${d}"/>${arms.map((a) => `<path d="${a.g.tube}"/><path d="${a.g.mitten}"/><path d="${a.g.thumb}"/>`).join('')}`;
+    // the slime: a puddle that spreads on the floor, with two little melting nubs for feet
+    const puddle = slime ? [`M${hx - wh * 1.06} ${yB - 8} a ${wh * 1.06} 26 0 1 0 ${wh * 2.12} 0 a ${wh * 1.06} 26 0 1 0 ${-wh * 2.12} 0 Z`, ...[-1, 1].map((s) => `M${hx + s * wh * 0.42 - 44} ${yB - 2} a 44 26 0 1 0 88 0 a 44 26 0 1 0 -88 0 Z`)] : [];
+    const sil = `${puddle.map((p) => `<path d="${p}"/>`).join('')}<path d="${d}"/>${arms.map((a) => `<path d="${a.g.tube}"/><path d="${a.g.mitten}"/><path d="${a.g.thumb}"/>`).join('')}`;
 
     // torso inside: shade, hatch, lit side, belly, the head's shadow, clothes
     let inside = `<rect width="1000" height="1100" fill="url(#hatch)"/><path d="${d}" fill="${base}" transform="translate(-22 -20)"/>`;
@@ -194,7 +196,7 @@ module.exports = function makeBody({ smooth, inked, line, dot, INK }) {
     const tid = id('tc'), o = id('go'), fb = id('gf');
     const torso = `<g transform="rotate(${lean} ${hx} ${yB})"><defs>${goo(o, INK, 0.2)}${goo(fb, base, 0.5)}<clipPath id="${tid}"><path d="${d}"/></clipPath></defs>
 <g filter="url(#${o})" transform="translate(4 5)">${sil}</g><g filter="url(#${o})">${sil}</g><g filter="url(#${fb})">${sil}</g>
-<path d="${d}" fill="${shade}"/><g clip-path="url(#${tid})">${inside}</g>
+${puddle.map((p) => `<path d="${p}" fill="${shade}"/>`).join('')}<path d="${d}" fill="${shade}"/><g clip-path="url(#${tid})">${inside}</g>
 ${arms.map((a) => armSvg(a.g, { base, shade, palm: a.k === 'wave' || a.k === 'up', pad })).join('')}</g>`;
 
     if (sit) for (const s of [-1, 1]) front.push(sole(hx + s * wh * 0.62, yB + 6, s, base, shade, pad));

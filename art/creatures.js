@@ -110,7 +110,8 @@ function creature(t) {
       back.push(inked(smooth(ear), base, shade, { depth: 16, extra: `<path d="${smooth([[bx - d * 30, top + 50], [bx - d * 8, top + 20], [tip[0] - d * 18, tip[1] + 38], [bx + d * 38, top + 70]])}" fill="${base2}"/>` }));
     }
   }
-  if (t.species === 'bun') for (const d of [-1, 1]) back.push(inked(smooth(blob(r, hx + d * 95, top - 95, 52, 150, { rot: d * 0.22, power: 2 })), base, shade, { depth: 16, extra: `<ellipse cx="${hx + d * 95}" cy="${top - 85}" rx="24" ry="105" transform="rotate(${d * 12.6} ${hx + d * 95} ${top - 85})" fill="${base2}"/>` }));
+  const earSvg = [];
+  if (t.species === 'bun') for (const d of [-1, 1]) { const e = inked(smooth(blob(r, hx + d * 95, top - 95, 52, 150, { rot: d * 0.22, power: 2 })), base, shade, { depth: 16, extra: `<ellipse cx="${hx + d * 95}" cy="${top - 85}" rx="24" ry="105" transform="rotate(${d * 12.6} ${hx + d * 95} ${top - 85})" fill="${base2}"/>` }); back.push(e); earSvg.push(e); }
   if (t.species === 'bear') for (const d of [-1, 1]) back.push(inked(smooth(blob(r, hx + d * hrx * 0.72, top + 30, 72, 68)), base, shade, { depth: 14, extra: `<circle cx="${hx + d * hrx * 0.72}" cy="${top + 34}" r="36" fill="${base2}"/>` }));
   if (t.species === 'imp') for (const d of [-1, 1]) {
     const hp = []; for (let i = 0; i <= 8; i += 1) { const k = i / 8; hp.push([hx + d * (hrx * 0.45 + k * 120 - k * k * 40), top + 40 - k * 170 + k * k * 30]); }
@@ -126,7 +127,8 @@ function creature(t) {
   if (t.species === 'moth') for (const d of [-1, 1]) { back.push(line(`M${hx + d * 60} ${top + 30} Q ${hx + d * 110} ${top - 120} ${hx + d * 190} ${top - 110}`, 8)); back.push(inked(smooth(blob(r, hx + d * 200, top - 112, 34, 30)), base2, shade2, { depth: 10 })); }
   // the head
   let headExtra = '';
-  if (t.marking === 'patch') headExtra += `<path d="${smooth(blob(r, hx + 95, hy - 10, 115, 105, { wobble: 0.05 }))}" fill="${base2}"/>`;
+  if (t.marking === 'patchbig') headExtra += `<path d="${smooth(blob(r, hx + 95, hy - 10, 115, 105, { wobble: 0.05 }))}" fill="${base2}"/>`;
+  if (t.marking === 'patch') headExtra += `<path d="${smooth(blob(r, hx + 84, hy + 8, 74, 70, { wobble: 0.06 }))}" fill="${base2}"/>`; // a spot around one eye, not half the face
   if (t.marking === 'stripes') for (let i = -1; i <= 1; i += 1) headExtra += `<path d="M${hx + i * 48 - 14} ${top - 10} L${hx + i * 48 + 14} ${top - 10} L${hx + i * 40} ${top + 70} Z" fill="${shade}"/>`;
   front.push(inked(smooth(blob(r, hx, hy, hrx, hry, { power: t.species === 'slime' ? 2 : 2.25, pear: t.species === 'bird' ? -0.05 : 0.07 })), base, shade, { w: 10, depth: 34, extra: headExtra }));
   if (t.species === 'moth') back.push(inked(smooth(Array.from({ length: 26 }, (_, i) => { const a = (i / 26) * Math.PI * 2; const rr = i % 2 ? 1 : 1.16; return [hx + Math.cos(a) * 175 * rr, hy + hry + 30 + Math.sin(a) * 62 * rr]; })), '#fff4dc', '#d8c3a0', { depth: 10 }));
@@ -179,7 +181,23 @@ function creature(t) {
   const wear = [];
   if (t.wear === 'scarf') { wear.push(inked(smooth(blob(r, hx, by - 82, 170, 34, { power: 2.2 })), t.accent, '#00000030', { depth: 10, w: 8, extra: Array.from({ length: 8 }, (_, i) => `<rect x="${hx - 180 + i * 50}" y="${by - 130}" width="20" height="100" fill="#fffdf7" opacity="0.7" transform="skewX(-20)"/>`).join('') })); wear.push(inked(smooth([[hx + 70, by - 70], [hx + 120, by - 60], [hx + 130, by + 40], [hx + 90, by + 36]]), t.accent, '#00000030', { depth: 8, w: 8 })); }
   if (t.wear === 'beanie') wear.push(inked(smooth([...blob(r, hx, top + 40, hrx * 0.86, 110, { power: 2.2 }).filter(([, y]) => y < top + 50), [hx + hrx * 0.86, top + 70], [hx - hrx * 0.86, top + 70]]), t.accent, '#00000030', { depth: 14, w: 9, extra: Array.from({ length: 9 }, (_, i) => `<rect x="${hx - hrx + i * 50}" y="${top + 30}" width="10" height="60" fill="#00000022"/>`).join('') }) + inked(smooth(blob(r, hx, top - 72, 34, 30, { wobble: 0.08 })), '#fffdf7', '#ddd3c2', { depth: 8, w: 8 }));
-  if (t.wear === 'cap') wear.push(inked(smooth([...blob(r, hx - 10, top + 50, hrx * 0.82, 100, { power: 2.4 }).filter(([, y]) => y < top + 55), [hx + hrx * 0.7, top + 64], [hx + hrx * 1.25, top + 72], [hx + hrx * 1.2, top + 92], [hx - hrx * 0.8, top + 70]]), t.accent, '#00000030', { depth: 14, w: 9, extra: `<circle cx="${hx - 10}" cy="${top - 40}" r="10" fill="#00000030"/>` }));
+  if (t.wear === 'cap') {
+    const band = top + hry * 0.5; // where the cap meets the forehead
+    const crown = Array.from({ length: 15 }, (_, i) => { const a = Math.PI + 0.16 + (i / 14) * (Math.PI - 0.32); return [hx + Math.cos(a) * hrx * 1.0, band + 6 + Math.sin(a) * hry * 0.62]; });
+    const dome = smooth([...crown, [hx + hrx * 0.9, band + 8], [hx, band + 22], [hx - hrx * 0.9, band + 8]]);
+    const lip = hx + hrx * 0.08; // the brim sits a little off centre, for asymmetry
+    const brim = smooth([[hx - hrx * 0.72, band + 10], [lip, band + 26], [hx + hrx * 0.74, band + 8], [hx + hrx * 0.86, band + 26], [lip + 20, band + 70], [hx - hrx * 0.84, band + 30]]);
+    const dark = '#00000030';
+    wear.push(`<ellipse cx="${lip}" cy="${band + 58}" rx="${hrx * 0.78}" ry="26" fill="${shade}" opacity="0.6"/>`); // the brim's shadow on the forehead
+    wear.push(inked(dome, t.accent, dark, { depth: 16, w: 9, extra: [-0.45, 0, 0.45].map((k) => `<path d="M${hx} ${top - 4} Q ${hx + k * hrx * 0.95} ${top + hry * 0.15} ${hx + k * hrx * 1.1} ${band + 14}" fill="none" stroke="${INK}" stroke-width="5" opacity="0.5"/>`).join('') + `<path d="M${hx - 14} ${band - 46} a 26 26 0 1 0 30 -34 a 20 20 0 1 1 -30 34 Z" fill="#fff4c9" stroke="${INK}" stroke-width="5"/>` }));
+    wear.push(inked(brim, t.accent, dark, { depth: 10, w: 9, extra: `<path d="M${hx - hrx * 0.7} ${band + 22} Q ${lip} ${band + 40} ${hx + hrx * 0.8} ${band + 22}" fill="none" stroke="${INK}" stroke-width="5" opacity="0.45"/>` }));
+    wear.push(`<circle cx="${hx}" cy="${top - 6}" r="13" fill="${t.accent}" stroke="${INK}" stroke-width="7"/>`);
+    // long ears go through holes in the cap
+    if (earSvg.length) {
+      const cid = `cap${uid += 1}`;
+      wear.push(`<clipPath id="${cid}"><rect x="0" y="-300" width="1000" height="${top + 300 + 2}"/></clipPath>${[-1, 1].map((d) => `<ellipse cx="${hx + d * 95}" cy="${top + 4}" rx="44" ry="13" fill="${INK}"/>`).join('')}<g clip-path="url(#${cid})">${earSvg.join('')}</g>`);
+    }
+  }
   if (t.wear === 'bandaid') wear.push(`<g transform="rotate(-25 ${hx - ex - 20} ${ey + ery + 30})"><rect x="${hx - ex - 70}" y="${ey + ery + 16}" width="100" height="30" rx="14" fill="#ffd9b0" stroke="${INK}" stroke-width="6"/><rect x="${hx - ex - 38}" y="${ey + ery + 16}" width="36" height="30" fill="#f0bb8a"/></g>`);
   if (t.wear === 'glasses') { for (const d of [-1, 1]) wear.push(`<circle cx="${hx + d * ex}" cy="${ey}" r="${erx + 14}" fill="#bfe8ff33" stroke="${INK}" stroke-width="8"/>`); wear.push(line(`M${hx - ex + erx + 14} ${ey - 6} Q ${hx} ${ey - 26} ${hx + ex - erx - 14} ${ey - 6}`, 8)); }
   if (t.wear === 'flower') { const fx = hx - hrx * 0.6, fy = top + 40; for (let i = 0; i < 5; i += 1) { const a = (i / 5) * Math.PI * 2; wear.push(inked(smooth(blob(r, fx + Math.cos(a) * 26, fy + Math.sin(a) * 26, 22, 22)), '#fffdf7', '#e8dccc', { depth: 6, w: 6 })); } wear.push(dot(fx, fy, 16, '#ffd23f') + `<circle cx="${fx}" cy="${fy}" r="16" fill="none" stroke="${INK}" stroke-width="6"/>`); }
