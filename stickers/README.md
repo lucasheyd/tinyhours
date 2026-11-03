@@ -50,3 +50,18 @@ Saída em `out/stickers/yoru-set/`:
 - `tab.png`, em 96×74.
 
 A folha com os 16 fica em `out/stickers/yoru-set.png`.
+
+## Rodada 2: personagens sem braço forçado
+
+Na primeira rodada, Pomu, Musubi e Lumi foram recusados porque os braços pareciam colados no corpo. A regra agora é que cada personagem age com o que o corpo dele tem:
+
+| Personagem | Ideia | Como age |
+|---|---|---|
+| Loaf | gato em pose de pão, com as patas sempre escondidas | orelhas (em pé, deitadas, atentas) e rabo (acena, sobe, enrola) |
+| Futo | enrolado no cobertor, não quer sair da cama | espia pela metade, se esconde inteiro, balança |
+| Burnie | fatia de pão, sempre um pouco queimado (*burnt out*) | fumacinha, migalhas, manteiga, pula da torradeira, fica mais tostado |
+| Drizzle | nuvenzinha que mostra o humor no tempo | chuva, tempestade, sol, arco-íris |
+
+```text
+node stickers/build-round2.js   # -> out/stickers/round2/
+```
