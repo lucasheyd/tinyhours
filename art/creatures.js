@@ -100,8 +100,6 @@ function creature(t) {
       if (t.species === 'imp') back.push(inked(smooth([[tp[10][0] - 26, tp[10][1] + 4], [tp[10][0] + 10, tp[10][1] - 40], [tp[10][0] + 34, tp[10][1] + 6]]), t.accent, '#00000030', { depth: 6, w: 7 }));
     }
     if (t.species === 'bun' || t.species === 'bear') back.push(inked(smooth(blob(r, hx + 140, by + 70, 42, 40, { wobble: 0.08 })), t.species === 'bun' ? '#fffdf7' : base, t.species === 'bun' ? '#ddd3c2' : shade, { depth: 10 }));
-  } else {
-    back.push(inked(smooth(blob(r, hx, by - 20, 230, 150, { power: 2.4, pear: 0.25, wobble: 0.04 })), base, shade, { depth: 34 }));
   }
   // ears and the like (behind the head)
   const top = hy - hry;
@@ -132,7 +130,7 @@ function creature(t) {
   if (t.marking === 'stripes') for (let i = -1; i <= 1; i += 1) headExtra += `<path d="M${hx + i * 48 - 14} ${top - 10} L${hx + i * 48 + 14} ${top - 10} L${hx + i * 40} ${top + 70} Z" fill="${shade}"/>`;
   front.push(inked(smooth(blob(r, hx, hy, hrx, hry, { power: t.species === 'slime' ? 2 : 2.25, pear: t.species === 'bird' ? -0.05 : 0.07 })), base, shade, { w: 10, depth: 34, extra: headExtra }));
   if (t.species === 'moth') back.push(inked(smooth(Array.from({ length: 26 }, (_, i) => { const a = (i / 26) * Math.PI * 2; const rr = i % 2 ? 1 : 1.16; return [hx + Math.cos(a) * 175 * rr, hy + hry + 30 + Math.sin(a) * 62 * rr]; })), '#fff4dc', '#d8c3a0', { depth: 10 }));
-  if (t.species === 'slime') { front.push(`<path d="${smooth(blob(r, hx - hrx * 0.45, hy - hry * 0.5, 44, 26, { rot: -0.5 }))}" fill="#ffffffcc"/>`); for (const k of [-0.5, 0.15, 0.6]) front.push(inked(smooth(blob(r, hx + k * hrx, hy + hry * 0.92 + 30, 18, 38, { power: 1.8 })), base, shade, { depth: 6, w: 8 })); }
+  if (t.species === 'slime') { front.push(`<path d="${smooth(blob(r, hx - hrx * 0.45, hy - hry * 0.5, 44, 26, { rot: -0.5 }))}" fill="#ffffffcc"/>`); }
 
   // face
   const ex = between(r, 72, 92), ey = hy + between(r, -5, 20), erx = between(r, 44, 54), ery = erx * between(r, 1.1, 1.3);
@@ -192,16 +190,17 @@ function creature(t) {
   const things = [];
   const hand = B.arms[1];
   if (hold !== 'none') {
-    const [px, py] = hand.P; const x = px + 6, y = py + 14;
+    const [px, py] = hand.P; const x = px, y = py + 18;
     if (hold === 'onigiri') things.push(inked(smooth([[x, y - 110], [x + 66, y + 10], [x - 66, y + 10]]), '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${x - 34}" y="${y - 40}" width="68" height="50" fill="#2b3a2e"/>` }));
     if (hold === 'can') things.push(inked(`M${x - 34} ${y - 120} h68 v124 h-68 Z`, t.accent, '#00000030', { depth: 10, extra: `<rect x="${x - 34}" y="${y - 84}" width="68" height="30" fill="#fffdf7"/>` }));
     if (hold === 'phone') things.push(inked(`M${x - 30} ${y - 140} h60 v140 h-60 Z`, '#cfd6e6', '#98a2bd', { depth: 10, extra: `<rect x="${x - 20}" y="${y - 128}" width="40" height="44" fill="#9fe3c6"/><rect x="${x - 22}" y="${y - 70}" width="44" height="6" fill="${INK}"/>` }));
     if (hold === 'icecream') things.push(inked(smooth([[x - 38, y - 70], [x + 38, y - 70], [x, y + 20]]), '#e8b07e', '#b77a4c', { depth: 8 }) + inked(smooth(blob(r, x, y - 92, 44, 38, { wobble: 0.06 })), '#ffb8dc', '#de7fb2', { depth: 12 }));
     if (hold === 'coffee') things.push(inked(`M${x - 38} ${y - 110} h76 l-8 110 h-60 Z`, '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${x - 38}" y="${y - 75}" width="80" height="32" fill="#b77a4c"/>` }) + line(`M${x - 18} ${y - 130} q 10 -16 0 -30 M${x + 12} ${y - 130} q 10 -16 0 -30`, 6, '#fffdf7'));
   }
-  const arms = B.arms.map((a) => B.armSvg(a));
-  const torso = t.species === 'slime' ? '' : B.behind + B.torso;
-  return [...back, torso, ...front, ...face, ...wear, B.front, ...things, ...arms].join('\n');
+  // the paw goes back on top of what it holds
+  const caps = hold !== 'none' ? [B.cap(hand)] : [];
+  const torso = B.behind + B.torso;
+  return [...back, torso, ...front, ...face, ...wear, B.front, ...things, ...caps].join('\n');
 }
 
 function star(cx, cy, R, rr, n = 4) {

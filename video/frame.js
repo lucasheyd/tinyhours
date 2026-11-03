@@ -70,4 +70,15 @@ ${over}${cap ? caption(cap) : ''}${logo()}
 <rect width="${VW}" height="${VH}" filter="url(#grain)" fill="#fff"/></svg>`;
 }
 
-module.exports = { frame, bubble, word, zz, heart, caption, logo, VW, VH, TOP, star };
+/**
+ * An arm pose over time, with eased in-betweens instead of jumps.
+ * keys: [[frame, pose], ...] in order; each change blends over `len` frames.
+ */
+function armTrack(f, keys, len = 8) {
+  let i = 0; while (i + 1 < keys.length && f >= keys[i + 1][0]) i += 1;
+  const [f0, cur] = keys[i];
+  if (i > 0 && f - f0 < len) return { from: keys[i - 1][1], to: cur, k: (f - f0) / len };
+  return cur;
+}
+
+module.exports = { frame, armTrack, bubble, word, zz, heart, caption, logo, VW, VH, TOP, star };

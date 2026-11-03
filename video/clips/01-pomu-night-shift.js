@@ -1,7 +1,7 @@
 'use strict';
 // Pomu dozes off at the register, the door chimes, Pomu is wide awake:
 // "Welcome to Tiny Hours!" ... and slowly dozes off again. Loops.
-const { frame, bubble, word, zz } = require('../frame');
+const { frame, bubble, word, zz, armTrack } = require('../frame');
 const { who } = require('../../art/cast');
 const { INK } = require('../../art/creatures');
 
@@ -37,7 +37,7 @@ module.exports = {
     else if (f < 104) { eyes = 'wide'; mouth = 'o'; dy = 34 - jump * 90 + settle * 56; squash = f < 86 ? 0.9 : f < 96 ? 1.1 : 1; }
     else if (f < 160) { eyes = 'sparkle'; mouth = 'open'; }
     else { eyes = back > 0.6 ? 'closed' : 'sleepy'; dy = back * 20; }
-    const t = who('pomu', { eyes, mouth, pose: { breath: f < 76 ? (Math.sin(f / 8) + 1) / 2 : 0, arms: f >= 104 && f < 160 ? ['down', 'wave'] : ['down', 'down'], swing: Math.sin(f / 4) } });
+    const t = who('pomu', { eyes, mouth, pose: { breath: f < 76 ? (Math.sin(f / 8) + 1) / 2 : 0, arms: ['down', armTrack(f, [[0, 'down'], [102, 'wave'], [156, 'down']], 9)], phase: f / 3.2 } });
     const over = [
       f < 76 && doze > 0.3 ? `<g transform="translate(0 389)">${zz(720, 400, (f % 48) / 48)}</g>` : '',
       ding ? word('DING!', 780, 560, ding) : '',

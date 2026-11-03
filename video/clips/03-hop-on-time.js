@@ -1,6 +1,6 @@
 'use strict';
 // Hop dashes in through the rain, skids to a stop: "ON TIME!" Loops.
-const { frame, bubble, word } = require('../frame');
+const { frame, bubble, word, armTrack } = require('../frame');
 const { who } = require('../../art/cast');
 const { INK } = require('../../art/creatures');
 
@@ -19,7 +19,7 @@ module.exports = {
     const skid = f >= 22 && f < 34;
     const squash = skid ? 0.86 : f >= 34 && f < 40 ? 1.08 : 1;
     const tilt = f < 26 ? -10 : 0;
-    const t = who('hop', { eyes: f < 30 ? 'wide' : 'sparkle', mouth: f < 30 ? 'o' : 'grin', pose: f < 40 ? { arms: ['down', 'down'], swing: Math.sin(f / 1.5) } : { arms: ['hip', 'wave'], swing: Math.sin(f / 4) } });
+    const t = who('hop', { eyes: f < 30 ? 'wide' : 'sparkle', mouth: f < 30 ? 'o' : 'grin', pose: { arms: [armTrack(f, [[0, 'out'], [34, 'hip']], 8), armTrack(f, [[0, 'out'], [40, 'wave']], 9)], phase: f < 34 ? f / 1.2 : f / 3.2 } });
     const lines = f < 30 ? [0, 1, 2, 3, 4].map((i) => `<path d="M${x + 150 - i * 30} ${520 + i * 70} h${-160 - i * 40}" stroke="#fffdf7" stroke-width="12" stroke-linecap="round" opacity="0.8"/>`).join('') : '';
     const dust = skid ? [0, 1, 2].map((i) => `<circle cx="${x + 330 + i * 40}" cy="${900 - i * 18}" r="${26 - i * 6}" fill="#c9d6ff" stroke="${INK}" stroke-width="6"/>`).join('') : '';
     const over = [

@@ -49,6 +49,26 @@ Os corpos têm sido o ponto fraco dos projetos. Este guia junta o que funciona e
 - **Respiração.** A barriga infla bem pouco quando o personagem está parado ou dormindo. Isso dá vida mesmo sem ação.
 - **Contexto fofo.** Uma atividade simples, como segurar algo, cochilar ou acenar, aumenta a fofura.
 
+## 5b. Juntas e movimento (segunda rodada)
+
+O aceno ficava estranho por três motivos:
+- o contorno do braço e o do corpo eram duas linhas separadas, então a junta fazia um "V" duro;
+- a raiz do braço não tinha linha nenhuma por fora;
+- a mão levantada encostava ou sumia atrás da bochecha.
+
+O que a pesquisa diz e como ficou:
+
+- **Uma silhueta só.** Tronco e braços viram uma forma única, e o contorno grosso passa só por fora dela. A junta da axila ganha um arredondado suave em vez de um canto. A técnica é borrar a silhueta e cortar no meio do borrão, o "gooey"/metaball. O contorno fica um pouco mais grosso onde as formas se encontram, como a tinta que acumula no canto, que é uma dica clássica de arte-final.
+- **Linha que some na junta.** Onde o braço passa na frente da barriga, a borda dele é uma linha fina que afina até sumir perto do ombro. A junta não fica marcada, mas o braço continua se lendo na frente do corpo.
+- **Braço de mangueira (rubber hose).** Uma curva só e contínua de ombro a pata, passando pelo cotovelo, com grossura quase igual. Nada de dobradiça ou quina. É o que deixa o movimento fluido.
+- **Pose por ângulos:** braço, antebraço e inclinação da pata. Interpolando ângulos em vez de posições, a mão viaja em arco, como pede o princípio dos arcos.
+- **Quebra sucessiva das juntas.** No aceno, o antebraço lidera e a pata vem cerca de um tempo depois (follow-through). Em referências de animação, a diferença entre ombro, braço e mão fica em torno de 2 desenhos.
+- **Sem saltos.** Toda troca de pose vira um in-between de 8 a 10 quadros com aceleração e desaceleração (ease in/out, `armTrack` em `video/frame.js`). Os membros se movem a cada quadro, a 24 fps, enquanto o tremor da linha muda a cada 2.
+- **Sem tangente com a cabeça.** Quando a pata levantada encostaria na bochecha, o braço abre sozinho até a pata aparecer inteira ao lado do rosto.
+- **Respiração e balanço parado.** Mesmo sem ação, a barriga respira e os braços balançam bem pouco, com a pata atrasada.
+
+Teste: `node video/render.js 90` gera `out/90-test-joints.mp4`. Mostra o Pomu e o Hop passando por todas as poses, só para conferir as juntas, não para postar.
+
 ## 6. O que está no código (`art/body.js`)
 
 - **Tronco em pera:**
@@ -62,7 +82,11 @@ Os corpos têm sido o ponto fraco dos projetos. Este guia junta o que funciona e
   - Tubo de grossura 30 a 35, que cresce na direção da mão, com cotovelo dobrado para fora.
   - Termina numa mão de luva de raio 41 com polegar.
   - A raiz do braço não tem contorno, então ele sai de dentro do tronco sem "costura".
-- **Poses de braço:** `down`, `hip`, `wave`, `hold`, `up` e `hug`. Também há `swing`, para balançar, e `breath`, para respirar.
+- **Poses de braço** (ângulos em `ARM`): `down`, `out`, `hip`, `wave`, `up`, `hold` e `hug`.
+  - Para misturar duas poses: `{ from, to, k }`.
+  - `phase` move o aceno e o balanço; `breath` faz respirar.
+- **Silhueta única:** tronco e braços passam pelo filtro de borrar e cortar, que gera o contorno e o preenchimento da junta. A borda interna do braço afina até sumir perto do ombro.
+- **Pata segurando algo:** é redesenhada por cima do objeto (`cap`).
 - **Pés:**
   - Em pé: feijões com dedos.
   - Sentado (`sit`): sola com almofadas.
@@ -70,7 +94,7 @@ Os corpos têm sido o ponto fraco dos projetos. Este guia junta o que funciona e
 
 ```js
 who('lumi', { pose: { sit: true, arms: ['hug', 'hug'] } })
-who('hop',  { pose: { arms: ['hip', 'wave'], swing: Math.sin(f / 4) } })
+who('hop',  { pose: { arms: ['hip', armTrack(f, [[0, 'down'], [40, 'wave']], 9)], phase: f / 3.2 } })
 ```
 
 Para conferir: `node art/bodies.js` gera `out/corpos.png`, com o elenco e 4 espécies nas 4 poses.
@@ -84,6 +108,7 @@ As mesmas regras, mas em poucos pixels:
 - **Braço:** de 3 a 4 px de grossura, nunca 1 a 2. A mão é um bloco de 4×4 com 1 px de polegar. O braço sai de dentro do tronco, sem contorno na raiz.
 - **Pés:** dois feijões de 5×3 para fora, com o tronco por cima.
 - **Silhueta:** precisa ler em preto chapado. Teste com a cor de tinta pura.
+- **Juntas:** o contorno passa em volta do tronco e do braço juntos. Na axila, 1 px de preenchimento arredonda o canto. A linha interna do braço sobre a barriga para 2 a 3 px antes do ombro.
 
 ## 8. Próximos passos
 
@@ -93,6 +118,11 @@ As mesmas regras, mas em poucos pixels:
 - Biblioteca de gestos: dar tchau, bocejar, pular de alegria, se espreguiçar.
 
 ## Fontes
+
+- [Brian Lemay: successive breaking of joints](https://www.brianlemay.com/Pages/animationschool/animation/1stsemesteranimation/successivebreaking.html)
+- [Brian Lemay: arm swing (arcs, drag, overlap)](https://brianlemay.com/Pages/animationschool/animation/1stsemesteranimation/10armswing/10armswing.html)
+- [GarageFarm: rubber hose animation](https://garagefarm.net/blog/rubber-hose-animation-the-classic-technique-that-defined-an-era)
+- [Clip Studio: inking tips (line weight, tapering)](https://www.clipstudio.net/how-to-draw/archives/155548)
 
 - [Clip Studio: Easy steps to creating chibi characters](https://clipstudio.net/how-to-draw/archives/155423)
 - [Clip Studio Tips: Animal and human chibis](https://tips.clip-studio.com/en-us/articles/4888)
