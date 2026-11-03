@@ -33,6 +33,13 @@ const curve = (P, n = 14) => { // quadratic bezier points through control P = [a
 
 // ----------------------------------------------------------------- props and weather
 const PROPS = {
+  snow: () => [[200, 250], [560, 230], [240, 560], [600, 520], [520, 600], [160, 420]].map(([x, y], i) => `<g transform="translate(${x} ${y}) rotate(${i * 17})">${[0, 60, 120].map((r) => `<path d="M-14 0 H14" transform="rotate(${r})" stroke="#9fd0ff" stroke-width="6" stroke-linecap="round"/>`).join('')}</g>`).join(''),
+  wind: () => [[120, 330], [100, 410], [130, 490]].map(([x, y], i) => `<path d="M${x} ${y} q 40 -${10 + i * 4} 80 0 t 40 -10" fill="none" stroke="#9aa6c4" stroke-width="7" stroke-linecap="round"/>`).join(''),
+  shiver: (c) => [-1, 1].map((d) => `<path d="M${370 + d * 180} 360 l ${d * 14} 10 l ${-d * 14} 10 l ${d * 14} 10 l ${-d * 14} 10" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`).join(''),
+  sign: () => `<g transform="translate(545 300) rotate(8)"><path d="M-40 -60 L0 -96 L40 -60" fill="none" stroke="${INK}" stroke-width="6"/><rect x="-82" y="-60" width="164" height="96" rx="14" fill="#fff4c9" stroke="${INK}" stroke-width="7"/><text x="0" y="-18" text-anchor="middle" font-family="Inter, Arial" font-weight="900" font-size="26" fill="${INK}">DO NOT</text><text x="0" y="16" text-anchor="middle" font-family="Inter, Arial" font-weight="900" font-size="26" fill="${INK}">DISTURB</text></g>`,
+  heat: () => `<g transform="translate(560 250)">${Array.from({ length: 8 }, (_, i) => `<path d="M0 -84 l0 -26" transform="rotate(${i * 45})" stroke="#ff9f43" stroke-width="11" stroke-linecap="round"/>`).join('')}<circle r="70" fill="#ffb347" stroke="${INK}" stroke-width="7"/></g>`,
+  boom: (c) => [-1, 1].map((d) => `<path transform="translate(${370 + d * 120} 572) scale(${d} 1)" d="M10 -30 L-22 14 L2 14 L-14 52 L28 -2 L2 -2 Z" fill="#ffd84d" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`).join('') + `<path transform="translate(370 590)" d="M10 -30 L-22 14 L2 14 L-14 52 L28 -2 L2 -2 Z" fill="#ffd84d" stroke="${INK}" stroke-width="6" stroke-linejoin="round"/>`,
+  fewDrops: () => [[300, 572], [400, 596], [470, 568]].map(([x, y]) => `<path d="M${x} ${y} l -5 18" stroke="#7cc6ff" stroke-width="8" stroke-linecap="round"/>`).join(''),
   alarm: () => `<g transform="translate(590 540) rotate(12)"><path d="M-40 -46 l-14 -14 M40 -46 l14 -14" stroke="${INK}" stroke-width="8" stroke-linecap="round"/><circle r="48" fill="#ff8a7a" stroke="${INK}" stroke-width="7"/><circle r="34" fill="#fffdf7" stroke="${INK}" stroke-width="5"/><path d="M0 -20 V0 L14 10" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/><circle cx="-26" cy="-50" r="12" fill="#ffd84d" stroke="${INK}" stroke-width="5"/><circle cx="26" cy="-50" r="12" fill="#ffd84d" stroke="${INK}" stroke-width="5"/><path d="M-70 -30 l-16 -8 M70 -30 l16 -8 M-74 0 h-18 M74 0 h18" stroke="${INK}" stroke-width="6" stroke-linecap="round"/></g>`,
   check: (c) => `<g transform="translate(${c.top[0] + 160} ${c.top[1] + 40})"><circle r="34" fill="#7ee0a1" stroke="${INK}" stroke-width="7"/><path d="M-14 0 l10 11 l20 -22" fill="none" stroke="${INK}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></g>`,
   hop: (c) => `<path d="M${c.top[0] - 120} ${c.top[1] + 30} q -16 -10 -10 -28 M${c.top[0] + 120} ${c.top[1] + 30} q 16 -10 10 -28" fill="none" stroke="${INK}" stroke-width="7" stroke-linecap="round"/>`,
@@ -187,5 +194,25 @@ function limbless(ch, e) {
   const faceSvg = s.faceClip === 'eyes' ? `<g clip-path="url(#${cl})">${faceEyes}</g>${(s.inside || '').includes('Q 370 358 470 336') ? `<g clip-path="url(#${cl})"><path d="M270 336 Q 370 358 470 336 L470 420 L270 420 Z" fill="${base}"/><path d="M272 338 Q 370 360 468 338" fill="none" stroke="${INK}" stroke-width="6" stroke-linecap="round"/></g>` : ''}` : `${faceRest}${faceEyes}`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${shadow}<g transform="${tf}" opacity="${e.fade ?? 1}">${body}${s.over || ''}${faceSvg}</g>${s.front || ''}${extras}${caption}</svg>`;
 }
+
+// The approved ones get a full pack of 16: the 9 above plus 7 more of their own.
+CHARS.drizzle.pack = [...CHARS.drizzle.set,
+  { caption: 'brb', eyes: 'dot', mouth: 'smile', fade: 0.5, extras: ['wind'] },
+  { caption: 'on my way!', eyes: 'dot', mouth: 'open', bow: 8, extras: ['wind'] },
+  { caption: "it's fine.", eyes: 'happy', mouth: 'flat', extras: ['fewDrops', 'sweat'] },
+  { caption: 'love it!', eyes: 'heart', mouth: 'open', weather: 'rainbow', extras: ['heartsUp'] },
+  { caption: 'so tired...', eyes: 'sleepy', mouth: 'wavy', squash: 0.86, extras: ['fewDrops'] },
+  { caption: 'so hot today', eyes: 'teary', mouth: 'o', squash: 0.9, extras: ['heat', 'sweat'] },
+  { caption: 'brrr', eyes: 'closed', mouth: 'wavy', extras: ['snow', 'shiver'] },
+];
+CHARS.futo.pack = [...CHARS.futo.set,
+  { caption: 'monday...', eyes: 'flat', mouth: 'flat', peek: 'half', extras: ['gloom'] },
+  { caption: 'brb', peek: 'in', bow: 6, extras: ['zz'] },
+  { caption: 'on my way!', eyes: 'dot', mouth: 'open', bow: 16, float: 12, extras: ['wind'] },
+  { caption: "it's fine.", eyes: 'happy', mouth: 'flat', peek: 'half', extras: ['sweat'] },
+  { caption: 'love you', eyes: 'heart', mouth: 'w', extras: ['heartsUp'] },
+  { caption: 'cold...', eyes: 'teary', mouth: 'wavy', peek: 'half', squash: 0.94, extras: ['snow', 'shiver'] },
+  { caption: 'do not disturb', peek: 'in', bow: -4, extras: ['sign'] },
+];
 
 module.exports = { CHARS, limbless };

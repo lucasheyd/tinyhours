@@ -65,3 +65,23 @@ Na primeira rodada, Pomu, Musubi e Lumi foram recusados porque os braços pareci
 ```text
 node stickers/build-round2.js   # -> out/stickers/round2/
 ```
+
+## Aprovados: Yoru, Drizzle e Futo
+
+O responsável aprovou três personagens. O Burnie (já existem versões melhores de pão) e o Loaf (ficou "legalzinho", mas não ideal) ficaram de fora.
+
+Cada aprovado tem um pacote de 16 stickers, no formato do LINE:
+- `01..16.png`, em 370×320;
+- `main.png`, em 240×240;
+- `tab.png`, em 96×74.
+
+| Personagem | Pasta | Folha |
+|---|---|---|
+| Yoru | `out/stickers/yoru-set/` | `yoru-set.png` |
+| Drizzle | `out/stickers/drizzle-set/` | `drizzle-set.png` |
+| Futo | `out/stickers/futo-set/` | `futo-set.png` |
+
+```text
+node stickers/build-yoru.js    # Yoru
+node stickers/build-packs.js   # Drizzle e Futo, e trio.png com os três
+```
