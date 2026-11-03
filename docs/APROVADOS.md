@@ -189,4 +189,6 @@ Para o Tiny Hours, a sugestão é um kit próprio aqui, por exemplo `three3d/`, 
 - `.blend` como fonte, se seguir o caminho do Punchy;
 - ou `.glb` (three.js), que também abre na web.
 
-**Status:** é só uma proposta. Nada em 3D foi modelado ainda.
+**Status:** o Drizzle já está em 3D (three.js). `node three3d/drizzle.js` gera `out/3d/drizzle-front.png`, `drizzle-34.png` e `drizzle.glb`. Ele é feito de esferas, uma cápsula e o contorno por casca invertida, com o rosto colado na superfície por raycast. Yoru e Futo seguem o mesmo molde.
+
+O script usa o Playwright já instalado na máquina. Se o `npm install` baixar outra versão dentro de `node_modules`, apague `node_modules/playwright*`.
