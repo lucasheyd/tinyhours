@@ -43,8 +43,8 @@ const face = ({ eyes, blush, mouth, size = 1 }) => {
     const e = new THREE.Mesh(new THREE.SphereGeometry(0.1 * size, 24, 16), flat(INK)); e.scale.set(1, 1.15, 0.35); stick(e, x, y);
     const g = new THREE.Mesh(new THREE.SphereGeometry(0.032 * size, 12, 8), flat('#ffffff')); g.position.set(0.03 * size, 0.05 * size, 0.04); e.add(g);
   }
-  for (const [x, y] of blush) { const b = new THREE.Mesh(new THREE.CircleGeometry(0.15 * size, 32), new THREE.MeshBasicMaterial({ color: '#ffb3c4', transparent: true, opacity: 0.8 })); b.scale.set(1, 0.62, 1); stick(b, x, y, 0.04); }
-  const m = new THREE.Mesh(new THREE.TorusGeometry(0.1 * size, 0.028 * size, 10, 24, Math.PI), flat(INK)); stick(m, mouth[0], mouth[1]); m.rotateZ(Math.PI);
+  for (const [x, y] of blush) { const b = new THREE.Mesh(new THREE.CircleGeometry(0.15 * size, 32), new THREE.MeshBasicMaterial({ color: '#ffb3c4', transparent: true, opacity: 0.8 })); b.scale.set(1, 0.62, 1); stick(b, x, y, 0.06); }
+  const m = new THREE.Mesh(new THREE.TorusGeometry(0.1 * size, 0.028 * size, 10, 24, Math.PI), flat(INK)); stick(m, mouth[0], mouth[1], 0.04); m.rotateZ(Math.PI);
 };
 ${build}
 const W = 740, H = 640, r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
