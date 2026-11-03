@@ -1,3 +1,11 @@
+# Decisão (03/11/2026): sem coleção. O 3D é para as animações
+
+O responsável decidiu que **não vai haver coleção**. Yoru e Drizzle em 3D servem para as animações e o conteúdo, como o Punchy. Os traços abaixo (roupas, chapéus, cores, clima) viram um **guarda-roupa de figurinos** para os vídeos e stickers. Não são traços de NFT.
+
+O texto abaixo fica só como histórico da ideia.
+
+---
+
 # Intenção: a próxima coleção pode ser em 3D
 
 Registrado em 03/11/2026. É uma ideia guardada, não uma decisão de lançamento.
