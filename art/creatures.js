@@ -4,6 +4,9 @@
 // curated palette and a 24h corner store at night.
 
 const W = 1000;
+const BODY = require('./body')({ smooth: (...a) => smooth(...a), inked: (...a) => inked(...a), line: (...a) => line(...a), dot: (...a) => dot(...a), INK: '#2b1d3a' });
+/** A lighter tint of a colour (for bellies). */
+function lighten(hex, k = 0.45) { const n = parseInt(hex.slice(1), 16); const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v + (255 - v) * k)); return `#${c.map((v) => v.toString(16).padStart(2, '0')).join('')}`; }
 
 // ----------------------------------------------------------------- random
 function rng(seed) {
@@ -97,8 +100,6 @@ function creature(t) {
       if (t.species === 'imp') back.push(inked(smooth([[tp[10][0] - 26, tp[10][1] + 4], [tp[10][0] + 10, tp[10][1] - 40], [tp[10][0] + 34, tp[10][1] + 6]]), t.accent, '#00000030', { depth: 6, w: 7 }));
     }
     if (t.species === 'bun' || t.species === 'bear') back.push(inked(smooth(blob(r, hx + 140, by + 70, 42, 40, { wobble: 0.08 })), t.species === 'bun' ? '#fffdf7' : base, t.species === 'bun' ? '#ddd3c2' : shade, { depth: 10 }));
-    back.push(inked(smooth(blob(r, hx, by, between(r, 135, 160), 125, { power: 2.6, pear: 0.12 })), base, shade, { depth: 30, extra: t.marking === 'belly' ? `<ellipse cx="${hx - 8}" cy="${by + 15}" rx="78" ry="70" fill="${t.coat2[1]}"/>` : '' }));
-    for (const d of [-1, 1]) back.push(inked(smooth(blob(r, hx + d * 72, by + 118, 62, 30, { power: 2.2 })), base, shade, { depth: 12 }));
   } else {
     back.push(inked(smooth(blob(r, hx, by - 20, 230, 150, { power: 2.4, pear: 0.25, wobble: 0.04 })), base, shade, { depth: 34 }));
   }
@@ -178,11 +179,6 @@ function creature(t) {
 
   // what it wears
   const wear = [];
-  if (t.wear === 'vest' && t.species !== 'slime') {
-    const vy = by - 60; const d = smooth([[hx - 140, vy + 30], [hx - 60, vy - 6], [hx - 30, vy + 90], [hx - 70, vy + 180], [hx - 150, vy + 150]]);
-    for (const s of [1, -1]) wear.push(`<g transform="${s === -1 ? `translate(${2 * hx} 0) scale(-1 1)` : ''}">${inked(d, t.accent, '#00000022', { depth: 12, w: 8, extra: `<rect x="${hx - 160}" y="${vy + 70}" width="140" height="22" fill="#fffdf7" opacity="0.85"/>` })}</g>`);
-    wear.push(`<g transform="rotate(-6 ${hx + 90} ${vy + 60})"><rect x="${hx + 50}" y="${vy + 40}" width="84" height="44" rx="8" fill="#fffdf7" stroke="${INK}" stroke-width="6"/><text x="${hx + 92}" y="${vy + 70}" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="20" text-anchor="middle" fill="${INK}">HELLO</text></g>`);
-  }
   if (t.wear === 'scarf') { wear.push(inked(smooth(blob(r, hx, by - 82, 170, 34, { power: 2.2 })), t.accent, '#00000030', { depth: 10, w: 8, extra: Array.from({ length: 8 }, (_, i) => `<rect x="${hx - 180 + i * 50}" y="${by - 130}" width="20" height="100" fill="#fffdf7" opacity="0.7" transform="skewX(-20)"/>`).join('') })); wear.push(inked(smooth([[hx + 70, by - 70], [hx + 120, by - 60], [hx + 130, by + 40], [hx + 90, by + 36]]), t.accent, '#00000030', { depth: 8, w: 8 })); }
   if (t.wear === 'beanie') wear.push(inked(smooth([...blob(r, hx, top + 40, hrx * 0.86, 110, { power: 2.2 }).filter(([, y]) => y < top + 50), [hx + hrx * 0.86, top + 70], [hx - hrx * 0.86, top + 70]]), t.accent, '#00000030', { depth: 14, w: 9, extra: Array.from({ length: 9 }, (_, i) => `<rect x="${hx - hrx + i * 50}" y="${top + 30}" width="10" height="60" fill="#00000022"/>`).join('') }) + inked(smooth(blob(r, hx, top - 72, 34, 30, { wobble: 0.08 })), '#fffdf7', '#ddd3c2', { depth: 8, w: 8 }));
   if (t.wear === 'cap') wear.push(inked(smooth([...blob(r, hx - 10, top + 50, hrx * 0.82, 100, { power: 2.4 }).filter(([, y]) => y < top + 55), [hx + hrx * 0.7, top + 64], [hx + hrx * 1.25, top + 72], [hx + hrx * 1.2, top + 92], [hx - hrx * 0.8, top + 70]]), t.accent, '#00000030', { depth: 14, w: 9, extra: `<circle cx="${hx - 10}" cy="${top - 40}" r="10" fill="#00000030"/>` }));
@@ -190,22 +186,22 @@ function creature(t) {
   if (t.wear === 'glasses') { for (const d of [-1, 1]) wear.push(`<circle cx="${hx + d * ex}" cy="${ey}" r="${erx + 14}" fill="#bfe8ff33" stroke="${INK}" stroke-width="8"/>`); wear.push(line(`M${hx - ex + erx + 14} ${ey - 6} Q ${hx} ${ey - 26} ${hx + ex - erx - 14} ${ey - 6}`, 8)); }
   if (t.wear === 'flower') { const fx = hx - hrx * 0.6, fy = top + 40; for (let i = 0; i < 5; i += 1) { const a = (i / 5) * Math.PI * 2; wear.push(inked(smooth(blob(r, fx + Math.cos(a) * 26, fy + Math.sin(a) * 26, 22, 22)), '#fffdf7', '#e8dccc', { depth: 6, w: 6 })); } wear.push(dot(fx, fy, 16, '#ffd23f') + `<circle cx="${fx}" cy="${fy}" r="16" fill="none" stroke="${INK}" stroke-width="6"/>`); }
 
-  // arms, and what they hold
-  const arms = [];
+  // the body (art/body.js): torso, feet, arms; held things sit under the paw
+  const B = BODY.body(t, { hx, hy, hrx, hry, base, shade, belly: t.marking === 'belly' ? base2 : lighten(base), accent: t.accent }, t.pose || {});
   const hold = t.species === 'slime' ? 'none' : t.hold;
-  for (const d of [-1, 1]) {
-    const up = hold !== 'none' && d === 1;
-    const ax = hx + d * 150, ay = by - 20;
-    const end = up ? [hx + 120, by - 40] : [hx + d * 175, by + 60];
-    arms.push(inked(smooth([[ax - 26, ay - 20], [ax + 20, ay - 24], [end[0] + 30, end[1] + 6], [end[0], end[1] + 34], [end[0] - 34, end[1] + 6]]), base, shade, { depth: 12, w: 8 }));
+  const things = [];
+  const hand = B.arms[1];
+  if (hold !== 'none') {
+    const [px, py] = hand.P; const x = px + 6, y = py + 14;
+    if (hold === 'onigiri') things.push(inked(smooth([[x, y - 110], [x + 66, y + 10], [x - 66, y + 10]]), '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${x - 34}" y="${y - 40}" width="68" height="50" fill="#2b3a2e"/>` }));
+    if (hold === 'can') things.push(inked(`M${x - 34} ${y - 120} h68 v124 h-68 Z`, t.accent, '#00000030', { depth: 10, extra: `<rect x="${x - 34}" y="${y - 84}" width="68" height="30" fill="#fffdf7"/>` }));
+    if (hold === 'phone') things.push(inked(`M${x - 30} ${y - 140} h60 v140 h-60 Z`, '#cfd6e6', '#98a2bd', { depth: 10, extra: `<rect x="${x - 20}" y="${y - 128}" width="40" height="44" fill="#9fe3c6"/><rect x="${x - 22}" y="${y - 70}" width="44" height="6" fill="${INK}"/>` }));
+    if (hold === 'icecream') things.push(inked(smooth([[x - 38, y - 70], [x + 38, y - 70], [x, y + 20]]), '#e8b07e', '#b77a4c', { depth: 8 }) + inked(smooth(blob(r, x, y - 92, 44, 38, { wobble: 0.06 })), '#ffb8dc', '#de7fb2', { depth: 12 }));
+    if (hold === 'coffee') things.push(inked(`M${x - 38} ${y - 110} h76 l-8 110 h-60 Z`, '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${x - 38}" y="${y - 75}" width="80" height="32" fill="#b77a4c"/>` }) + line(`M${x - 18} ${y - 130} q 10 -16 0 -30 M${x + 12} ${y - 130} q 10 -16 0 -30`, 6, '#fffdf7'));
   }
-  if (hold === 'onigiri') arms.splice(1, 0, inked(smooth([[hx + 120, by - 140], [hx + 190, by - 30], [hx + 50, by - 30]]), '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${hx + 85}" y="${by - 75}" width="70" height="50" fill="#2b3a2e"/>` }));
-  if (hold === 'can') arms.splice(1, 0, inked(`M${hx + 90} ${by - 140} h70 v120 h-70 Z`, t.accent, '#00000030', { depth: 10, extra: `<rect x="${hx + 90}" y="${by - 105}" width="70" height="30" fill="#fffdf7"/>` }));
-  if (hold === 'phone') arms.splice(1, 0, inked(`M${hx + 96} ${by - 170} h60 v140 h-60 Z`, '#cfd6e6', '#98a2bd', { depth: 10, extra: `<rect x="${hx + 106}" y="${by - 158}" width="40" height="44" fill="#9fe3c6"/><rect x="${hx + 104}" y="${by - 100}" width="44" height="6" fill="${INK}"/>` }));
-  if (hold === 'icecream') arms.splice(1, 0, inked(smooth([[hx + 92, by - 100], [hx + 168, by - 100], [hx + 130, by - 10]]), '#e8b07e', '#b77a4c', { depth: 8 }) + inked(smooth(blob(r, hx + 130, by - 120, 44, 38, { wobble: 0.06 })), '#ffb8dc', '#de7fb2', { depth: 12 }));
-  if (hold === 'coffee') arms.splice(1, 0, inked(`M${hx + 92} ${by - 130} h76 l-8 110 h-60 Z`, '#fffdf7', '#ddd3c2', { depth: 10, extra: `<rect x="${hx + 92}" y="${by - 95}" width="80" height="32" fill="#b77a4c"/>` }) + line(`M${hx + 110} ${by - 150} q 10 -16 0 -30 M${hx + 140} ${by - 150} q 10 -16 0 -30`, 6, '#fffdf7'));
-
-  return [...back, ...front, ...face, ...wear, ...arms].join('\n');
+  const arms = B.arms.map((a) => B.armSvg(a));
+  const torso = t.species === 'slime' ? '' : B.behind + B.torso;
+  return [...back, torso, ...front, ...face, ...wear, B.front, ...things, ...arms].join('\n');
 }
 
 function star(cx, cy, R, rr, n = 4) {
