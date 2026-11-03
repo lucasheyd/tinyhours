@@ -6,7 +6,8 @@
     "video": "node video/render.js",
     "cast": "node art/sheet.js",
     "check": "node art/check-frame.js",
-    "poses": "node art/bodies.js"
+    "poses": "node art/bodies.js",
+    "stickers": "node stickers/build.js"
   },
   "devDependencies": {
     "playwright": "^1.48.0"
