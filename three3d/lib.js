@@ -38,8 +38,9 @@ const stick = (obj, x, y, lift = 0.01) => {
   obj.position.copy(hit.point).addScaledVector(n, lift); obj.lookAt(obj.position.clone().add(n)); char.add(obj); return obj;
 };
 /** Dot eyes with a glint, pink blush and a small smile. */
-const face = ({ eyes, blush, mouth, size = 1 }) => {
+const face = ({ eyes, blush, mouth, size = 1, closed = false }) => {
   for (const [x, y] of eyes) {
+    if (closed) { const c = new THREE.Mesh(new THREE.TorusGeometry(0.1 * size, 0.026 * size, 10, 24, Math.PI), flat(INK)); stick(c, x, y - 0.04); continue; }
     const e = new THREE.Mesh(new THREE.SphereGeometry(0.1 * size, 24, 16), flat(INK)); e.scale.set(1, 1.15, 0.35); stick(e, x, y);
     const g = new THREE.Mesh(new THREE.SphereGeometry(0.032 * size, 12, 8), flat('#ffffff')); g.position.set(0.03 * size, 0.05 * size, 0.04); e.add(g);
   }
