@@ -21,4 +21,4 @@ O produto vem primeiro. Os personagens em 3D são testados nas redes e nos stick
 
 - **Protótipos de coleção em 3D:** vão ser pedidos a outro Claude, pensando nesta intenção.
 - **Base técnica:** `three3d/` (three.js, sombreamento toon, contorno por casca invertida, rosto colado por raycast). O Punchy no Blender (`lucasheyd/timecard`, `engine/punchy3d`) é a referência de animação.
-- **Personagens prontos em 3D:** Yoru (de terno e gravata) e Drizzle. O Futo saiu do 3D. Ver `docs/APROVADOS.md`..
+- **Personagens prontos em 3D:** Yoru (de terno e gravata) e Drizzle. O Futo saiu do 3D. Ver `docs/APROVADOS.md`.
